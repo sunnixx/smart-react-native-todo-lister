@@ -21,4 +21,26 @@ app.load = async function() {
   .catch(err => {throw err;}) 
 }
 
+app.edit = async function(Id) {
+  await fetch('http://10.0.3.2:5000/edit', {
+    method : 'POST',
+    headers: {
+      'content-type' : 'application/json'
+    },
+    body: JSON.stringify({"id" : Id})
+  })
+  .catch(err => {throw err});
+}
+
+app.delete = async function(Id) {
+  await fetch('http://10.0.3.2:5000/delete',{
+    method: 'POST',
+    headers: {
+      'content-type' : 'application/json'
+    },
+    body: JSON.stringify({"id" : Id})
+  })
+  .catch(err => {throw err})
+}
+
 module.exports = app;

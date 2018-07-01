@@ -15,10 +15,8 @@ mongoose.connect('mongodb://admin:FasT1234@ds018708.mlab.com:18708/todolistapp')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-var DATA = [];
-
 //API calls
-app.post('/store',(request,response) => {
+app.post('/store',(request,response,done) => {
   let arr = request.body
 
   const item = new Item();
@@ -29,14 +27,32 @@ app.post('/store',(request,response) => {
   });
 })
 
-app.get('/load',(request,response) => {
+app.get('/load',(request,response,done) => {
   Item.find({},(err,items) => {
-    if(err) throw err;
+    if(err) return done(err);
 
-    console.log(items);
     response.json(items);
   })
 })
+
+app.post('/edit',(request,response,done) => {
+  Item.findById(request.body.id,(err,item) => {
+    if(err) return done(err);
+
+    item.item = request.body.item;
+    item.save((err,updatedItem) => {
+      if(err) return done(err);
+      response.json(updatedItem);
+    });
+  });
+});
+
+app.post('/delete',(request,response,done) => {
+  Item.findByIdAndRemove(request.body.id,(err,response) => {
+    if(err) return done(err);
+    response.json(response);
+  });
+});
 
 //Server port
 app.listen(5000,(err) => {
