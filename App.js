@@ -3,7 +3,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Text,
   StyleSheet,
   Switch,
   ScrollView,
@@ -11,6 +10,14 @@ import {
   AsyncStorage
 }
   from 'react-native';
+
+import {
+  Button,
+  Text,
+  Icon,
+  Toast,
+  Root
+} from 'native-base'
 
 import app from './API';
 
@@ -27,21 +34,14 @@ export default class extends Component {
   }
 
   async getItems() {
-    try {
-      const items = await AsyncStorage.getItem('@Items:key');
-      this.setState({ allItems: items });
-    } catch (err) {
-      throw err;
-    }
+    await AsyncStorage.getItem('items').then((value) => {
+      this.setState({ allItems: JSON.parse(value) })
+    }).catch(err => { throw err })
   }
 
   componentDidMount() {
     app.load();
-    
-    AsyncStorage.getItem('items').then((value) => {
-      this.setState({allItems:JSON.parse(value)})
-    }).catch(err => {throw err});
-  
+    this.getItems();
   }
 
   handleClick() {
@@ -57,7 +57,12 @@ export default class extends Component {
       app.store(this.state.allItems);
 
     } else {
-      ToastAndroid.show('Items field cannot be empty', ToastAndroid.SHORT);
+      Toast.show({
+        text: "Text cannot be empty",
+        buttonText: "Got It!",
+        position: "bottom",
+        type: "warning"
+      })
     }
   }
 
@@ -71,20 +76,18 @@ export default class extends Component {
 
   render() {
     return (
-      <View style={Styles.container}>
+      <Root style={Styles.container}>
         <TextInput
           onChangeText={(text) => this.setState({ item: text })}
           placeholder="Enter Item"
           clearButtonMode="always"
           ref={input => { this.textInput = input }}
         />
-        <TouchableOpacity
-          onPress={this.handleClick}
-          style={Styles.button}
-        >
-          <Text style={Styles.text} ref={text => { this.text = text }}>Add</Text>
-        </TouchableOpacity>
-
+        <Button iconLeft full onPress={this.handleClick}>
+          <Icon name="add" />
+          <Text style={Styles.text} ref={text => {this.text = text}}> Add </Text>
+        </Button>
+        
         <ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
           {this.state.allItems.map((item, index) => {
             return (
@@ -101,7 +104,7 @@ export default class extends Component {
             )
           })}
         </ScrollView>
-      </View>
+      </Root>
     )
   }
 }
