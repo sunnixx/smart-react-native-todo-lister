@@ -7,7 +7,7 @@ const app = express();
 const Item = require('./models/Todo');
 
 //Connect Database
-mongoose.connect('mongodb://admin:FasT1234@ds018708.mlab.com:18708/todolistapp')
+mongoose.connect('mongodb://admin:FasT1234@ds018708.mlab.com:18708/todolistapp',{useNewUrlParser: true})
 .then(() => console.log('Database connected'))
 .catch(err => {throw err})
 

@@ -94,12 +94,18 @@ export default class extends Component {
               <View key={index + "view"} style={Styles.todoContainer}>
                 <Text key={index} style={Styles.itemText}>{item.item}</Text>
 
-                <Switch
+                {/* <Switch
                   key={index + "switch"}
                   onValueChange={this.handleValueChange}
                   tintColor='green'
                   style={Styles.switch}
-                />
+                /> */}
+                <Button onPress={this.handleDelete} style={{width: 47}}>
+                  <Icon name="md-trash" />
+                </Button>
+                <Button onPress={this.handleEdit} style={{width: 47}}>
+                  <Icon name="md-create" />
+                </Button>
               </View>
             )
           })}
